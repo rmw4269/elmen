@@ -125,7 +125,7 @@ class Elmen {
 				while (tokens.length >= 2) {
 					properties.push([tokens.shift(), tokens.shift()]);
 				}
-			} else {
+			} else if (tokens.length % 3 == 0) {
 				while (tokens.length >= 3) {
 					properties.push([tokens.shift(), tokens.shift(), tokens.shift()]);
 				}
