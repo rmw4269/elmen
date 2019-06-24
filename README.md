@@ -44,5 +44,5 @@ to generate this HTML:
 ```
 This can be expanded to *much* more complex applications.
 
-##contributing
+## contributing
 If you have questions, concerns, or ideas for this project, *please* reach out to me via email or pull request!
