@@ -1,7 +1,9 @@
 # elmen
 small JS library for creating and nesting HTML elements and other nodes
+
 ## introduction
 This library was developed to streamline the process of defining and modifying HTML elements by enhancing it with function chaining and intuitive nesting. I started this code one day to give me less of a headache.
+
 ## example
 I want to create a `ul` element with a number of bullets defined by an input. Here’s the function to generate it:
 ```javascript
@@ -41,3 +43,6 @@ to generate this HTML:
 </ul>
 ```
 This can be expanded to *much* more complex applications.
+
+##contributing
+If you have questions, concerns, or ideas for this project, *please* reach out to me via email or pull request!
