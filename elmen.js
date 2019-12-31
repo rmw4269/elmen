@@ -201,4 +201,14 @@ class Elmen {
 	}
 };
 
-Elmen.prototype.withStyle = Elmen.prototype.withCSS;
+[
+	["withAttribute", "withAttributes"],
+	["withClass", "withClasses"],
+	["withStyles", "withCSS"],
+	["withStyle", "withStyles"],
+	["withChild", "withChildren"],
+	["withListener", "withListeners"],
+	["withAction", "withActions"]
+].forEach(alias => {
+	Elmen.prototype[alias[0]] = Elmen.prototype[alias[1]];
+});
