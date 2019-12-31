@@ -1,5 +1,5 @@
 class Elmen {
-	
+
 	/**
 	 * This creates a new {@linkcode Elmen} instance, using a pre-existing element or constructing
 	 * a new one.
@@ -13,7 +13,7 @@ class Elmen {
 			value: false,
 			writable: true
 		});
-		if (String.isString(elementOrTagName)) {
+		if (elementOrTagName instanceof String || typeof elementOrTagName === "string") {
 			elementOrTagName = document.createElement(elementOrTagName);
 		}
 		Object.defineProperty(this, "_element", {
@@ -23,7 +23,7 @@ class Elmen {
 			writable: false
 		});
 	}
-	
+
 	/**
 	 * This is a getter for the element and does nothing else.
 	 * @returns {HTMLElement} the element
@@ -32,7 +32,7 @@ class Elmen {
 	get() {
 		return this._element;
 	}
-	
+
 	/**
 	 * This is a getter for the element. However, this also finalizes (sets
 	 * {@linkcode Elmen#finalized} to {@code true}) this {@linkcode Elmen}, removing its link to the
@@ -52,7 +52,7 @@ class Elmen {
 		});
 		return out;
 	}
-	
+
 	/**
 	 * This adds the given attributes to the element. The enumerable properties of the argument
 	 * are assigned as attributes to the element, where the property name corresponds to the
@@ -68,7 +68,7 @@ class Elmen {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * This adds the given classes to the element’s {@linkcode HTMLElement#classList}.
 	 * @param {...String} classes classes to add
@@ -78,7 +78,7 @@ class Elmen {
 		this._element.classList.add(...classes);
 		return this;
 	}
-	
+
 	/**
 	 * This adds CSS styles defined by `styleDeclaration` to the element. The argument must be
 	 * <ul>
@@ -136,10 +136,11 @@ class Elmen {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * This appends the provided children, in order, to the element. Children may be any
-	 * combination of {@linkcode String}s, {@linkcode Node}s, or {@linkcode Elmen}s.
+	 * combination of {@linkcode String}s, {@linkcode Node}s, or {@linkcode Elmen}s. Null
+	 * and undefined values are automatically stripped.
 	 * {@code String}s are converted to string {@code Node}s, and {@linkcode Elmen}s are
 	 * {@linkcode Elmen#done finalized} to their respective elements.
 	 * @param {...String | Node | Elmen} children children to append
@@ -149,17 +150,21 @@ class Elmen {
 		if (Array.isArray(children)) {
 			children = children.flat();
 		}
-		for (let node of children) {
-			if (node instanceof globalThis.rmw4269.packages.Elmen) {
-				node = node.done();
-			} else if (String.isString(node)) {
-				node = new Text(node);
+		for (let child of children) {
+			if (child !== null && child !== undefined) {
+				if (!(child instanceof Node)) {
+					if (child instanceof Elmen) {
+						child = child.done();
+					} else if (child instanceof String || typeof child === "string") {
+						child = new Text(child);
+					}
+				}
+				this._element.appendChild(child);
 			}
-			this._element.appendChild(node);
 		}
 		return this;
 	}
-	
+
 	/**
 	 * This attaches event listeners, in order, to the element. Each argument must follow the
 	 * format of the {@code options} argument of {@linkcode EventTarget#addEventListener}, but
@@ -183,7 +188,7 @@ class Elmen {
 			this._element.addEventListener(config.type, config.listner, options);
 		}
 	}
-	
+
 	/**
 	 * This runs the provided functions, in order, on the element. Each function takes in only the element as an argument.
 	 * @param {...function} functions functions to run on the element
