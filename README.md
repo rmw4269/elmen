@@ -5,7 +5,7 @@ small JS library for creating and nesting HTML elements and other nodes
 This library was developed to streamline the process of defining and modifying HTML elements by enhancing it with function chaining and intuitive nesting. I started this code one day to give me less of a headache.
 
 ## example
-I want to create a `ul` element with a number of bullets defined by an input. Here’s the function to generate it:
+I want to create a `ul` element with a number of bullets defined by an input. Here’s a custom function that could be written to generate it:
 ```javascript
 function makeList(...items) {
 	return new Elmen("ul").withClasses("item-list").withAttributes({start: 0}).withChildren(
