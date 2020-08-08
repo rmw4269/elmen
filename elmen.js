@@ -18,7 +18,7 @@ class Elmen {
 		} else if (elementOrTagName instanceof Elmen) {
 			elementOrTagName = elementOrTagName._element;
 		}
-		if (elementOrTagName instanceof HTMLElement) {
+		if (Elmen.verbosity <= Elmen.VERBOSITY.NO_CHECKS || elementOrTagName instanceof HTMLElement) {
 			Object.defineProperty(this, "_element", {
 				configurable: true,
 				enumerable: false,
@@ -68,7 +68,7 @@ class Elmen {
 	 * @returns this {@linkcode Elmen}
 	 */
 	withAttributes(attributes) {
-		if (typeof attributes != "object") {
+		if (Elmen.verbosity <= Elmen.VERBOSITY.NO_CHECKS || typeof attributes != "object") {
 			throw "The argument must be an object whose enumerable properties represent the desired attributes to be applied.";
 		}
 		for (let attributeName of Object.getOwnPropertyNames(attributes)) {
@@ -131,15 +131,30 @@ class Elmen {
 			let tokens = Array.from(arguments);
 			let properties = [];
 			if (tokens.length % 2 == 0) {
+				if (Elmen.verbosity >= Elmen.VERBOSITY.HIGH) {
+					console.group("Elmen.withCSS token interpretation");
+					console.info("interpreting tokens as property-value pairs…")
+				}
 				while (tokens.length >= 2) {
 					properties.push([tokens.shift(), tokens.shift()]);
 				}
 			} else if (tokens.length % 3 == 0) {
+				if (Elmen.verbosity >= Elmen.VERBOSITY.HIGH) {
+					console.group();
+					console.info("interpreting tokens as property-value-priority tuples…")
+				}
 				while (tokens.length >= 3) {
 					properties.push([tokens.shift(), tokens.shift(), tokens.shift()]);
 				}
 			} else {
 				throw "CSS properties need to be defined as either property-value pairs or property-value-priority tuples. Otherwise, use a 2-D array.";
+			}
+			if (Elmen.verbosity >= Elmen.VERBOSITY.HIGH) {
+				console.table(properties.map(property => property.length == 2 ?
+					{property: property[0], value: property[1]} :
+					{property: property[0], value: property[1], priority: property[2]}
+				));
+				console.groupEnd();
 			}
 			return withCSS(properties);
 		}
@@ -168,7 +183,8 @@ class Elmen {
 					} else if (child instanceof String || childType === "string") {
 						child = new Text(child);
 					} else if (
-						child instanceof Number
+						Elmen.verbosity <= Elmen.VERBOSITY.NO_CHECKS
+						|| child instanceof Number
 						|| childType == "number"
 						|| child instanceof Boolean
 						|| childType == "boolean"
@@ -181,6 +197,8 @@ class Elmen {
 					}
 				}
 				this._element.appendChild(child);
+			} else if (Elmen.verbosity >= Elmen.VERBOSITY.HIGH) {
+				console.info(`${child === null ? "A null" : "An undefined"} child was skipped.`);
 			}
 		}
 		return this;
@@ -202,14 +220,16 @@ class Elmen {
 	withListeners(...listeners) {
 		let options;
 		for (let config of listeners) {
-			if (!config.type) {
-				throw "No type was given for the listener. Ensure that the “type” property is present.";
-			}
-			if (!config.listener) {
-				throw "No listener was defined for the configuration. Ensure that the “listener” property is present and is a function."
-			}
-			if (typeof config.listener !== "function") {
-				throw `The listener provided in the “listener” property is not a function; it is a ${typeof config.listener}.`
+			if (Elmen.verbosity > Elmen.VERBOSITY.NO_CHECKS) {
+				if (!config.type) {
+					throw "No type was given for the listener. Ensure that the “type” property is present.";
+				}
+				if (!config.listener) {
+					throw "No listener was defined for the configuration. Ensure that the “listener” property is present and is a function."
+				}
+				if (typeof config.listener !== "function") {
+					throw `The listener provided in the “listener” property is not a function; it is a ${typeof config.listener}.`
+				}
 			}
 			options = Object.assign(Object.create(null), config);
 			delete options.type;
@@ -234,6 +254,39 @@ class Elmen {
 		return this;
 	}
 };
+
+verbosityEnum: {
+	let verbosities = {
+		HIGH: 1,
+		DEFAULT: 0,
+		NO_CHECKS: -1
+	}
+
+	/**
+	 * This is the static enumerator for the different levels of verbosity. Setting
+	 * {@linkcode Elmen#verbosity} to `NO_CHECKS` causes some assertions to be skipped
+	 * over while processing input arguments. This slightly speeds up execution while
+	 * providing less helpful error messages.
+	 */
+	Object.defineProperty(Elmen, "VERBOSITY", {
+		configurable: false,
+		enumerable: true,
+		value: Object.freeze(verbosities),
+		writable: false
+	});
+}
+
+/**
+ * This is the current verbosity level of {@linkcode Elmen} as a whole. This does not
+ * affect whether or not the code fails, just how useful and detailed the console and
+ * error messages are.
+ */
+Object.defineProperty(Elmen, "verbosity", {
+	configurable: false,
+	enumerable: true,
+	value: Elmen.VERBOSITY.DEFAULT,
+	writable: true
+});
 
 [
 	["withAttribute", "withAttributes"],
