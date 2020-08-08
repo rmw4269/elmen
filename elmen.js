@@ -65,6 +65,9 @@ class Elmen {
 	 * @returns this {@linkcode Elmen}
 	 */
 	withAttributes(attributes) {
+		if (typeof attributes != "object") {
+			throw "The argument must be an object whose enumerable properties represent the desired attributes to be applied.";
+		}
 		for (let attributeName of Object.getOwnPropertyNames(attributes)) {
 			let attributeValue = attributes[attributeName];
 			this._element.setAttribute(attributeName, (attributeValue == undefined || attributeValue == null) ? "" : attributeValue);
@@ -155,11 +158,23 @@ class Elmen {
 		}
 		for (let child of children) {
 			if (child !== null && child !== undefined) {
+				let childType = typeof child;
 				if (!(child instanceof Node)) {
 					if (child instanceof Elmen) {
 						child = child.done();
-					} else if (child instanceof String || typeof child === "string") {
+					} else if (child instanceof String || childType === "string") {
 						child = new Text(child);
+					} else if (
+						child instanceof Number
+						|| childType == "number"
+						|| child instanceof Boolean
+						|| childType == "boolean"
+						|| child instanceof BigInt
+						|| childType == "bigint"
+					) {
+						child = new Text(String(child));
+					} else {
+						throw `The child type “${childType}” is unsupported or cannot be converted into a text node. Supported types are:${[].map(type => `• ${type}`).join("\n")}`;
 					}
 				}
 				this._element.appendChild(child);
@@ -184,6 +199,15 @@ class Elmen {
 	withListeners(...listeners) {
 		let options;
 		for (let config of listeners) {
+			if (!config.type) {
+				throw "No type was given for the listener. Ensure that the “type” property is present.";
+			}
+			if (!config.listener) {
+				throw "No listener was defined for the configuration. Ensure that the “listener” property is present and is a function."
+			}
+			if (typeof config.listener !== "function") {
+				throw `The listener provided in the “listener” property is not a function; it is a ${typeof config.listener}.`
+			}
 			options = Object.assign(Object.create(null), config);
 			delete options.type;
 			delete options.listener;
@@ -199,6 +223,9 @@ class Elmen {
 	 */
 	withActions(...functions) {
 		for (let func of functions) {
+			if (typeof func != "function") {
+				throw `The action provided is not a function; it is a ${typeof func}.`;
+			}
 			func.apply(globalThis, [this._element]);
 		}
 		return this;
