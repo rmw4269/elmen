@@ -15,13 +15,16 @@ class Elmen {
 		});
 		if (elementOrTagName instanceof String || typeof elementOrTagName === "string") {
 			elementOrTagName = document.createElement(elementOrTagName);
+		} else if (elementOrTagName instanceof HTMLElement || elementOrTagName instanceof Elmen) {
+			Object.defineProperty(this, "_element", {
+				configurable: true,
+				enumerable: false,
+				value: (elementOrTagName instanceof Elmen) ? elementOrTagName._element : elementOrTagName,
+				writable: false
+			});
+		} else {
+			throw "The given argument is not a tag name, an HTMLElement, or an Elmen.";
 		}
-		Object.defineProperty(this, "_element", {
-			configurable: true,
-			enumerable: false,
-			value: elementOrTagName,
-			writable: false
-		});
 	}
 
 	/**
