@@ -170,9 +170,9 @@ class Elmen {
 	 * format of the {@code options} argument of {@linkcode EventTarget#addEventListener}, but
 	 * with two additional properties:
 	 * <ul>
-	 * 	<li>{@code type} whose value is euqivalent to the {@code type} argument of
+	 * 	<li>{@code type} whose value is equivalent to the {@code type} argument of
 	 * 				{@linkcode EventTarget#addEventListener}</li>
-	 * 	<li>{@code listener} whose value is euqivalent to the {@code listener} argument of
+	 * 	<li>{@code listener} whose value is equivalent to the {@code listener} argument of
 	 * 				{@linkcode EventTarget#addEventListener}</li>
 	 * </ul>
 	 * @param {...Object} listeners data about the event listeners to attach
