@@ -15,11 +15,14 @@ class Elmen {
 		});
 		if (elementOrTagName instanceof String || typeof elementOrTagName === "string") {
 			elementOrTagName = document.createElement(elementOrTagName);
-		} else if (elementOrTagName instanceof HTMLElement || elementOrTagName instanceof Elmen) {
+		} else if (elementOrTagName instanceof Elmen) {
+			elementOrTagName = elementOrTagName._element;
+		}
+		if (elementOrTagName instanceof HTMLElement) {
 			Object.defineProperty(this, "_element", {
 				configurable: true,
 				enumerable: false,
-				value: (elementOrTagName instanceof Elmen) ? elementOrTagName._element : elementOrTagName,
+				value: ((elementOrTagName instanceof Elmen) ? elementOrTagName._element : elementOrTagName),
 				writable: false
 			});
 		} else {
