@@ -95,11 +95,11 @@ class Elmen {
 	 * 	<li>an array of two-element or three-element arrays, each array specifying the property
 	 * 			name, property value, and optionally the property’s priority
 	 * 			<p>The lengths may be mixed. If a two-element array has a property value ending in
-	 * 					“ !important”, then it will be extracted into the priotiry.</p></li>
+	 * 					“ !important”, then it will be extracted into the priority.</p></li>
 	 * 	<li>a variable number of arguments, with each pair or triple specifying a property as in the array method
 	 * 			<p>The number of arguments must be divisible by two or three, or an exception will be
 	 * 					thrown. This argument structure is slowest, because it is restructured to a 2-D array
-	 * 					that is then recursively passed into {@linkcode Elmen#withCss}.</p></li>
+	 * 					that is then recursively passed into {@linkcode Elmen#withCSS}.</p></li>
 	 * </ul>
 	 * This method never deletes CSS properties.
 	 * @param {CSSStyleDeclaration | String[][] | ...String} styleDeclaration styles to add
