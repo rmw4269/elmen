@@ -26,7 +26,7 @@ class Elmen {
 				writable: false
 			});
 		} else {
-			throw "The given argument is not a tag name, an HTMLElement, or an Elmen.";
+			throw `The given argument is not a tag name, an HTMLElement, or an Elmen; it is a ${typeof elementOrTagName}.`;
 		}
 	}
 
