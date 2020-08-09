@@ -96,8 +96,8 @@ class Elmen {
 	 * 			name, property value, and optionally the property’s priority
 	 * 			<p>The lengths may be mixed. If a two-element array has a property value ending in
 	 * 					“ !important”, then it will be extracted into the priority.</p></li>
-	 * 	<li>a variable number of arguments, with each pair or triple specifying a property as in the array method
-	 * 			<p>The number of arguments must be divisible by two or three, or an exception will be
+	 * 	<li>a variable number of arguments, with each pair specifying a property as in the array method
+	 * 			<p>The number of arguments must be divisible by two, or an exception will be
 	 * 					thrown. This argument structure is slowest, because it is restructured to a 2-D array
 	 * 					that is then recursively passed into {@linkcode Elmen#withCSS}.</p></li>
 	 * </ul>
@@ -121,7 +121,7 @@ class Elmen {
 				let priority = undefined;
 				if (property.length > 2) {
 					priority = property[2];
-				} else if (property[1].endsWith(" !important")) {
+				} else if (String(property[1]).endsWith(" !important")) {
 					priority = "important";
 					property[1] = property[1].substring(0, property[1].length - " !important".length);
 				}
@@ -132,31 +132,19 @@ class Elmen {
 			let properties = [];
 			if (tokens.length % 2 == 0) {
 				if (Elmen.verbosity >= Elmen.VERBOSITY.HIGH) {
-					console.group("Elmen.withCSS token interpretation");
-					console.info("interpreting tokens as property-value pairs…")
+					console.group(`interpreting tokens as property-value pairs${String.fromCodePoint(0x2026)}`);
 				}
 				while (tokens.length >= 2) {
 					properties.push([tokens.shift(), tokens.shift()]);
 				}
-			} else if (tokens.length % 3 == 0) {
-				if (Elmen.verbosity >= Elmen.VERBOSITY.HIGH) {
-					console.group();
-					console.info("interpreting tokens as property-value-priority tuples…")
-				}
-				while (tokens.length >= 3) {
-					properties.push([tokens.shift(), tokens.shift(), tokens.shift()]);
-				}
 			} else {
-				throw "CSS properties need to be defined as either property-value pairs or property-value-priority tuples. Otherwise, use a 2-D array.";
+				throw "CSS properties need to be defined as property-value pairs. Otherwise, use a 2-D array.";
 			}
 			if (Elmen.verbosity >= Elmen.VERBOSITY.HIGH) {
-				console.table(properties.map(property => property.length == 2 ?
-					{property: property[0], value: property[1]} :
-					{property: property[0], value: property[1], priority: property[2]}
-				));
+				console.table(properties.map(prop => { return {property: prop[0], value: prop[1]}; }));
 				console.groupEnd();
 			}
-			return withCSS(properties);
+			return this.withCSS(properties);
 		}
 		return this;
 	}
