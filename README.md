@@ -49,7 +49,7 @@ If you have questions, concerns, or ideas for this project, *please* reach out t
 
 ## documentation
 
-Any function whose name starts with “with” returns the same Elment from which the function was called, so they can be chained together.
+Any function whose name starts with “with” returns the same `Elmen` object from which the function was called, so they can be chained together.
 
 ```javascript
 let test = new Elmen("span");
@@ -58,7 +58,7 @@ test.withChildren("Hello, World!").withClasses("fancy"); // returns test
 
 ### Elmen(elementOrTagName)
 
-This constructor creates a new Elmen instance, using a pre-existing element or constructing a new one. The argument can be one of three things.
+This constructor creates a new `Elmen` instance, using a pre-existing element or constructing a new one. The argument can be one of three things.
 * An Elmen will have its related element copied to the new instance.
 * A string will be [interpreted as a tag name](https://developer.Mozilla.org/docs/Web/API/Document/createElement) for a new element.
 * An HTML element will be linked with the new Elmen and be the target of all actions.
