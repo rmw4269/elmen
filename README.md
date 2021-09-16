@@ -93,7 +93,7 @@ This adds the given classes to the element’s [classList](https://developer.Moz
 ### withCSS(styleDeclaration)
 *aliases: withStyle, withStyles*
 
-This adds to the element the given CSS styles as inline styles. The argument may be formatted in one of four ways.
+This adds to the element the given CSS styles as inline styles. The argument may be formatted in one of three ways.
 
 #### CSSStyleDeclaration
 A [CSSStyleDeclaration](https://developer.Mozilla.org/docs/Web/API/CSSStyleDeclaration) will have its properties copied over.
